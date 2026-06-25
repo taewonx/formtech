@@ -15,8 +15,8 @@ export function Layout() {
     <div className="app-layout">
       <header className="app-header flex flex-col md:flex-row items-center justify-between px-4 py-3 md:px-8 md:py-4 border-b border-white/10 bg-card/90 backdrop-blur-md sticky top-0 z-50">
         <Link to="/" className="logo flex items-center gap-2 font-bold text-xl text-accent mb-3 md:mb-0">
-          <span className="text-2xl">🪐</span>
-          <span>Poemtech</span>
+          <span className="text-2xl">⚡</span>
+          <span>FormTech</span>
         </Link>
         <nav className="flex items-center gap-2 overflow-x-auto w-full md:w-auto justify-center hide-scrollbar">
           {NAV.map(({ path, label }) => (

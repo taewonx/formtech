@@ -34,7 +34,7 @@ export function Home() {
       {/* Features Section */}
       <section id="features" className="w-full max-w-6xl px-4 py-16 md:py-24 border-t border-white/5">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">왜 Poemtech 인가요?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">왜 FormTech 인가요?</h2>
           <p className="text-muted">전문가의 눈을 대신하는 강력한 분석 도구를 제공합니다.</p>
         </div>
 

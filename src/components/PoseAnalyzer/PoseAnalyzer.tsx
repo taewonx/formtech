@@ -101,7 +101,7 @@ export function PoseAnalyzer() {
   // 세션 저장 및 히스토리 관리 (localStorage 초기화)
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>(() => {
     try {
-      const raw = localStorage.getItem('poemtech_session_history');
+      const raw = localStorage.getItem('formtech_session_history');
       return raw ? JSON.parse(raw) : [];
     } catch (e) {
       console.error(e);
@@ -773,7 +773,7 @@ export function PoseAnalyzer() {
 
     const updated = [newSession, ...savedSessions].slice(0, 15); // 최대 15개 저장
     setSavedSessions(updated);
-    localStorage.setItem('poemtech_session_history', JSON.stringify(updated));
+    localStorage.setItem('formtech_session_history', JSON.stringify(updated));
     setSaveSuccessMsg('기록이 저장됐어요! 📝');
     setTimeout(() => setSaveSuccessMsg(null), 3000);
   };
@@ -782,7 +782,7 @@ export function PoseAnalyzer() {
   const deleteSession = (id: string) => {
     const filtered = savedSessions.filter((s) => s.id !== id);
     setSavedSessions(filtered);
-    localStorage.setItem('poemtech_session_history', JSON.stringify(filtered));
+    localStorage.setItem('formtech_session_history', JSON.stringify(filtered));
   };
 
   // 비디오 파일 업로드 핸들러
