@@ -5,19 +5,19 @@ function generateId() {
   return crypto.randomUUID();
 }
 
-export function useCanvasDrawing(initialColor = '#00ff88') {
+export function useCanvasDrawing() {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
-  const [drawMode, setDrawMode] = useState<DrawMode>('scrub');
-  const [color, setColor] = useState(initialColor);
+  const [drawMode, setDrawMode] = useState<DrawMode>('point');
 
   const startStroke = useCallback(
     (point: Point) => {
+      const strokeColor = drawMode === 'point' ? '#ff4757' : '#00ff88';
       const stroke: Stroke = {
         id: generateId(),
-        type: drawMode as 'point' | 'line' | 'path',
+        type: drawMode,
         points: [point],
-        color,
+        color: strokeColor,
       };
       setCurrentStroke(stroke);
       if (drawMode === 'point') {
@@ -25,7 +25,7 @@ export function useCanvasDrawing(initialColor = '#00ff88') {
         setCurrentStroke(null);
       }
     },
-    [drawMode, color],
+    [drawMode],
   );
 
   const continueStroke = useCallback((point: Point) => {
@@ -58,9 +58,7 @@ export function useCanvasDrawing(initialColor = '#00ff88') {
   return {
     strokes: allStrokes,
     drawMode,
-    color,
     setDrawMode,
-    setColor,
     startStroke,
     continueStroke,
     endStroke,

@@ -16,7 +16,6 @@ import type { PoseFrame, PoseKeypoint, PoseAnalysisResult as TFAnalysisResult } 
 
 import { useBlobUrl } from '../../hooks/useBlobUrl';
 import { useVideoPlayer } from '../../hooks/useVideoPlayer';
-import { useVideoScrubbing } from '../../hooks/useVideoScrubbing';
 import { useCanvasDrawing } from '../../hooks/useCanvasDrawing';
 import { VideoControls } from '../VideoPlayer/VideoControls';
 import { CanvasOverlay } from '../CanvasOverlay/CanvasOverlay';
@@ -59,20 +58,10 @@ export function PoseAnalyzer() {
     stepFrame,
     setRate,
   } = useVideoPlayer({ src: blobUrl });
-
-  const { isScrubbing, scrubHandlers } = useVideoScrubbing({
-    duration,
-    currentTime,
-    seek,
-    togglePlay,
-  });
-
   const {
     strokes,
     drawMode,
-    color,
     setDrawMode,
-    setColor,
     startStroke,
     continueStroke,
     endStroke,
@@ -903,24 +892,18 @@ export function PoseAnalyzer() {
       {/* 촬영 가이드 팝업/패널 */}
       {showPrepGuide && (
         <div className="prep-guide-card bg-card border border-accent rounded-radius p-5 mb-6 relative">
-          <button
-            type="button"
-            className="absolute top-3 right-3 text-muted hover:text-white"
-            onClick={() => setShowPrepGuide(false)}
-          >
-            ✕ 닫기
-          </button>
+
           <h4 className="text-accent font-bold mb-3">📋 정확한 분석을 위해 체크해주세요</h4>
           <p className="text-sm text-muted mb-4">
             정확한 폼 분석을 위한 최적의 촬영 구도와 준비사항이에요:
           </p>
           
-          <div className="flex flex-row gap-5 mb-4 items-stretch">
-            <div className="guide-image-container w-1/2 bg-black/30 border border-border rounded-lg overflow-hidden flex items-center justify-center">
-              <img src={exercise === 'squat' ? '/squat_guide.jpg' : '/deadlift_guide.jpg'} alt={`${exercise === 'squat' ? '스쿼트' : '데드리프트'} 올바른 촬영 구도 가이드`} className="w-full h-full object-cover" />
+          <div className="flex flex-col md:flex-row gap-4 md:gap-5 mb-4 md:items-stretch">
+            <div className="guide-image-container w-full md:w-1/2 bg-black/40 border border-border rounded-lg overflow-hidden flex items-center justify-center p-2 min-h-[200px]">
+              <img src={exercise === 'squat' ? '/squat_guide.jpg' : '/deadlift_guide.jpg'} alt={`${exercise === 'squat' ? '스쿼트' : '데드리프트'} 올바른 촬영 구도 가이드`} className="w-full h-full" object-fit="contain"/>
             </div>
             
-            <div className="checklist-grid w-1/2 flex flex-col justify-center gap-3">
+            <div className="checklist-grid w-full md:w-1/2 flex flex-col justify-center gap-2 md:gap-3">
               <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer">
                 <input
                   type="checkbox"
@@ -971,11 +954,11 @@ export function PoseAnalyzer() {
               </label>
             </div>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-muted">영상은 내 기기에서만 처리돼요. 외부 전송 없음 🔒</span>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-0 mt-4 md:mt-0">
+            <span className="text-xs text-muted text-center sm:text-left">영상은 내 기기에서만 처리돼요. 외부 전송 없음 🔒</span>
             <button
               type="button"
-              className="primary-btn bg-accent text-bg text-sm px-4 py-2"
+              className="primary-btn bg-accent text-bg text-sm px-4 py-3 md:py-2 w-full sm:w-auto font-bold disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!prepGuideReady}
               onClick={() => setShowPrepGuide(false)}
             >
@@ -1021,11 +1004,11 @@ export function PoseAnalyzer() {
                     </small>
                     <button
                       type="button"
-                      className="primary-btn bg-accent text-bg px-6 py-3 font-bold"
+                      className={`primary-btn bg-accent text-bg px-6 py-3 font-bold ${showPrepGuide ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={startWebcam}
-                      disabled={!modelReady}
+                      disabled={!modelReady || showPrepGuide}
                     >
-                      카메라 켜기
+                      {showPrepGuide ? '가이드라인을 먼저 확인해주세요' : '카메라 켜기'}
                     </button>
                   </div>
                 )}
@@ -1051,24 +1034,23 @@ export function PoseAnalyzer() {
           ) : (
             <div className="video-file-pane flex flex-col">
               {!blobUrl ? (
-                <label className="upload-zone large border border-dashed border-border rounded-radius flex flex-col items-center justify-center p-8 bg-card cursor-pointer hover:bg-elevated transition aspect-video">
-                  <input type="file" accept="video/*" onChange={handleFileChange} hidden />
+                <label className={`upload-zone large border border-dashed border-border rounded-radius flex flex-col items-center justify-center p-8 transition aspect-video ${showPrepGuide ? 'bg-card/50 opacity-50 cursor-not-allowed' : 'bg-card cursor-pointer hover:bg-elevated'}`}>
+                  <input type="file" accept="video/*" onChange={handleFileChange} hidden disabled={showPrepGuide} />
                   <div className="upload-content text-center">
                     <span className="upload-icon text-4xl block mb-2">📹</span>
-                    <p className="font-bold">운동 영상 올리기</p>
+                    <p className="font-bold">{showPrepGuide ? '가이드라인을 먼저 확인해주세요' : '운동 영상 올리기'}</p>
                     <small className="text-muted block mt-1">MP4, MOV 지원 · 내 기기에서 분석</small>
                   </div>
                 </label>
               ) : (
                 <>
                   <div 
-                    className={`video-container bg-black rounded-radius overflow-hidden border border-border relative touch-none ${drawMode === 'scrub' ? (isScrubbing ? 'cursor-grabbing' : 'cursor-grab') : ''}`}
-                    {...(drawMode === 'scrub' ? scrubHandlers : {})}
+                    className="video-container bg-black rounded-radius overflow-hidden border border-border relative touch-none"
                   >
                     <video
                       ref={videoRef}
                       src={blobUrl}
-                      className={`video-element w-full block max-h-[500px] object-contain ${drawMode === 'scrub' ? 'pointer-events-none' : ''}`}
+                      className="video-element w-full block max-h-[500px] object-contain"
                       playsInline
                     />
                     <canvas ref={canvasRef} className="skeleton-canvas absolute inset-0 pointer-events-none" />
@@ -1077,7 +1059,7 @@ export function PoseAnalyzer() {
                       strokes={strokes}
                       width={dimensions.width}
                       height={dimensions.height}
-                      interactive={drawMode !== 'scrub'}
+                      interactive={true}
                       onStartStroke={startStroke}
                       onContinueStroke={continueStroke}
                       onEndStroke={endStroke}
@@ -1102,32 +1084,38 @@ export function PoseAnalyzer() {
                     onSetRate={setRate}
                   />
 
-                  <div className="drawing-toolbar mt-3 flex gap-2 items-center flex-wrap bg-elevated/50 p-2 md:p-3 rounded-xl border border-white/5">
-                    <span className="text-sm font-bold text-accent mr-1 md:mr-2">도구</span>
-                    {(['scrub', 'point', 'line', 'path'] as DrawMode[]).map((mode) => (
-                      <button
-                        key={mode}
-                        type="button"
-                        className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-full transition-all ${drawMode === mode ? 'bg-accent text-bg font-bold shadow-md' : 'bg-card text-muted hover:text-white border border-white/5'}`}
-                        onClick={() => setDrawMode(mode)}
-                      >
-                        {mode === 'scrub' ? '탐색' : mode === 'point' ? '관절' : mode === 'line' ? '선' : '궤적'}
-                      </button>
-                    ))}
-                    <div className="flex-1 min-w-[20px]"></div>
-                    <input
-                      type="color"
-                      value={color}
-                      onChange={(e) => setColor(e.target.value)}
-                      title="색상"
-                      className="w-8 h-8 rounded-full border-none p-0 cursor-pointer bg-transparent"
-                    />
-                    <button type="button" onClick={undo} className="text-xs md:text-sm text-muted hover:text-white px-2">
-                      되돌리기
-                    </button>
-                    <button type="button" onClick={clearDrawing} className="text-xs md:text-sm text-red hover:text-red-400 px-2">
-                      지우기
-                    </button>
+                  <div className="drawing-toolbar mt-3 bg-elevated/50 p-3 md:p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="text-sm font-bold text-accent mr-2">그리기 도구</span>
+                        {(['point', 'path'] as DrawMode[]).map((mode) => (
+                          <button
+                            key={mode}
+                            type="button"
+                            className={`px-3 py-1.5 text-xs md:text-sm rounded-lg transition-all flex items-center gap-1.5 ${drawMode === mode ? 'bg-accent text-bg font-bold shadow-[0_0_10px_rgba(168,85,247,0.4)]' : 'bg-card text-muted hover:text-white hover:bg-card/80 border border-white/5'}`}
+                            onClick={() => setDrawMode(mode)}
+                          >
+                            <span>{mode === 'point' ? '📍' : '✍️'}</span>
+                            {mode === 'point' ? '관절' : '궤적'}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 items-center">
+
+                        <button type="button" onClick={undo} className="text-xs md:text-sm bg-card border border-border px-3 py-1.5 rounded-lg text-muted hover:text-white transition-colors">
+                          ↩️ 되돌리기
+                        </button>
+                        <button type="button" onClick={clearDrawing} className="text-xs md:text-sm bg-red/10 border border-red/20 px-3 py-1.5 rounded-lg text-red hover:bg-red/20 transition-colors">
+                          🗑️ 지우기
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs md:text-sm text-muted bg-black/30 px-3 py-2 rounded-lg border border-white/5">
+                      {drawMode === 'point' && "📍 관절: 화면을 클릭해 특정 위치나 관절에 점을 표시합니다."}
+                      {drawMode === 'path' && "✍️ 궤적: 드래그하여 바패스(궤적) 선을 그리거나 자유롭게 메모합니다."}
+                    </div>
                   </div>
 
                   {/* AI 분석 실행 버튼 */}

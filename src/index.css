@@ -591,56 +591,6 @@ a:hover {
   }
 }
 
-/* Custom Layout Utilities for AI Posture Analyzer */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-row { flex-direction: row; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.items-center { align-items: center; }
-.items-baseline { align-items: baseline; }
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 0.75rem; }
-.gap-4 { gap: 1rem; }
-.gap-6 { gap: 1.5rem; }
-.grid { display: grid; }
-.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-.w-full { width: 100%; }
-.h-full { height: 100%; }
-.ml-auto { margin-left: auto; }
-.mr-auto { margin-right: auto; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 0.75rem; }
-.mb-4 { margin-bottom: 1rem; }
-.mb-6 { margin-bottom: 1.5rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 0.75rem; }
-.mt-4 { margin-top: 1rem; }
-.p-3 { padding: 0.75rem; }
-.p-4 { padding: 1rem; }
-.p-5 { padding: 1.25rem; }
-.pb-2 { padding-bottom: 0.5rem; }
-.pr-1 { padding-right: 0.25rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-.px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
-.py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
-
-.text-sm { font-size: 0.875rem; }
-.text-xs { font-size: 0.75rem; }
-.text-lg { font-size: 1.125rem; }
-.text-2xl { font-size: 1.50rem; }
-.text-3xl { font-size: 1.875rem; }
-.text-4xl { font-size: 2.25rem; }
-.text-5xl { font-size: 3rem; }
-.text-center { text-align: center; }
-.italic { font-style: italic; }
-.underline { text-decoration: underline; }
-.block { display: block; }
-.hidden { display: none; }
-.overflow-hidden { overflow: hidden; }
 
 .font-bold { font-weight: 700; }
 .text-muted { color: var(--text-muted); }
@@ -677,23 +627,7 @@ a:hover {
 .aspect-video { aspect-ratio: 16 / 9; }
 .cursor-pointer { cursor: pointer; }
 
-@media (min-width: 640px) {
-  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
 
-@media (min-width: 768px) {
-  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (min-width: 1024px) {
-  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .lg\:col-span-2 { grid-column: span 2 / span 2; }
-  .lg\:col-span-1 { grid-column: span 1 / span 1; }
-}
-
-.sm\:grid-cols-4 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
 
 /* Custom Additions for Checklist Prep Guide & Reports */
 .checklist-item input[type='checkbox'] {
