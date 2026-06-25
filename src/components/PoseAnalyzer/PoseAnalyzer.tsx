@@ -77,7 +77,8 @@ export function PoseAnalyzer() {
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // 촬영 준비 가이드 상태
-  const [showPrepGuide, setShowPrepGuide] = useState(true);
+  const [guideExpanded, setGuideExpanded] = useState(true);
+  const [hasCompletedGuide, setHasCompletedGuide] = useState(false);
   const [guideAngle, setGuideAngle] = useState(false);
   const [guideFullBody, setGuideFullBody] = useState(false);
   const [guideClothing, setGuideClothing] = useState(false);
@@ -843,30 +844,36 @@ export function PoseAnalyzer() {
       {/* 탭 인터페이스 & 운동 선택바 */}
       <div className="analyzer-tabs flex flex-col lg:flex-row gap-4 mb-4 md:mb-6 border-b border-white/10 pb-4 justify-between items-start lg:items-center">
         {/* 카메라/영상 탭 */}
-        <div className="flex gap-2 w-full lg:w-auto overflow-x-auto hide-scrollbar pb-2 lg:pb-0 border-b lg:border-none border-white/5">
+        <div className="flex flex-wrap gap-3 w-full lg:w-auto pb-2 lg:pb-0 border-b lg:border-none border-white/5 p-1">
           <button
             type="button"
-            className={`tab-btn px-4 md:px-6 py-2 rounded-lg font-bold transition-all whitespace-nowrap ${
-              activeTab === 'webcam' ? 'bg-accent text-bg shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'bg-elevated/50 text-muted hover:bg-elevated'
+            className={`tab-btn relative px-4 md:px-6 py-2.5 rounded-lg font-bold transition-all duration-300 whitespace-nowrap border-2 flex items-center justify-center gap-2 flex-1 sm:flex-none ${
+              activeTab === 'webcam' 
+                ? 'bg-accent/20 border-accent text-white shadow-[0_0_20px_rgba(168,85,247,0.2)] scale-105 z-10' 
+                : 'bg-elevated/30 border-transparent text-muted hover:bg-elevated/80 hover:text-white'
             }`}
             onClick={() => handleTabChange('webcam')}
           >
-            🎥 실시간 카메라
+            <span className={activeTab === 'webcam' ? 'animate-pulse' : ''}>🎥</span> 
+            실시간 카메라
           </button>
           <button
             type="button"
-            className={`tab-btn px-4 md:px-6 py-2 rounded-lg font-bold transition-all whitespace-nowrap ${
-              activeTab === 'video' ? 'bg-accent text-bg shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'bg-elevated/50 text-muted hover:bg-elevated'
+            className={`tab-btn relative px-4 md:px-6 py-2.5 rounded-lg font-bold transition-all duration-300 whitespace-nowrap border-2 flex items-center justify-center gap-2 flex-1 sm:flex-none ${
+              activeTab === 'video' 
+                ? 'bg-accent/20 border-accent text-white shadow-[0_0_20px_rgba(168,85,247,0.2)] scale-105 z-10' 
+                : 'bg-elevated/30 border-transparent text-muted hover:bg-elevated/80 hover:text-white'
             }`}
             onClick={() => handleTabChange('video')}
           >
-            📁 영상 업로드
+            <span className={activeTab === 'video' ? 'animate-bounce' : ''}>📁</span> 
+            영상 업로드
           </button>
         </div>
 
         {/* 운동 선택 */}
         <div className="flex w-full lg:w-auto justify-between lg:justify-end items-center gap-4">
-          <div className="exercise-selector flex items-center gap-2 bg-elevated/30 p-1.5 rounded-xl border border-white/5 w-full sm:w-auto overflow-x-auto">
+          <div className="exercise-selector flex flex-wrap items-center gap-2 bg-elevated/30 p-1.5 rounded-xl border border-white/5 w-full sm:w-auto">
             <button
               type="button"
               className={`flex-1 sm:flex-none px-3 md:px-5 py-2 rounded-lg text-sm md:text-base font-bold transition-all whitespace-nowrap ${
@@ -890,21 +897,30 @@ export function PoseAnalyzer() {
       </div>
 
       {/* 촬영 가이드 팝업/패널 */}
-      {showPrepGuide && (
-        <div className="prep-guide-card bg-card border border-accent rounded-radius p-5 mb-6 relative">
-
-          <h4 className="text-accent font-bold mb-3">📋 정확한 분석을 위해 체크해주세요</h4>
+      {guideExpanded ? (
+        <div className="prep-guide-card bg-card border border-accent rounded-radius p-5 mb-6 relative animate-fade-in">
+          <div className="flex justify-between items-start mb-3">
+            <h4 className="text-accent font-bold text-lg">📋 정확한 분석을 위해 체크해주세요!</h4>
+            {hasCompletedGuide && (
+              <button 
+                onClick={() => setGuideExpanded(false)}
+                className="text-muted hover:text-white text-sm"
+              >
+                접기 ▴
+              </button>
+            )}
+          </div>
           <p className="text-sm text-muted mb-4">
             정확한 폼 분석을 위한 최적의 촬영 구도와 준비사항이에요:
           </p>
           
           <div className="flex flex-col md:flex-row gap-4 md:gap-5 mb-4 md:items-stretch">
             <div className="guide-image-container w-full md:w-1/2 bg-black/40 border border-border rounded-lg overflow-hidden flex items-center justify-center p-2 min-h-[200px]">
-              <img src={exercise === 'squat' ? '/squat_guide.jpg' : '/deadlift_guide.jpg'} alt={`${exercise === 'squat' ? '스쿼트' : '데드리프트'} 올바른 촬영 구도 가이드`} className="w-full h-full" object-fit="contain"/>
+              <img src={exercise === 'squat' ? '/squat_guide.jpg' : '/deadlift_guide.jpg'} alt={`${exercise === 'squat' ? '스쿼트' : '데드리프트'} 올바른 촬영 구도 가이드`} className="w-full h-full object-contain" />
             </div>
             
             <div className="checklist-grid w-full md:w-1/2 flex flex-col justify-center gap-2 md:gap-3">
-              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer">
+              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer transition-colors hover:border-accent/50">
                 <input
                   type="checkbox"
                   checked={guideAngle}
@@ -916,7 +932,7 @@ export function PoseAnalyzer() {
                   <span className="text-xs text-muted leading-tight block mt-1">카메라 렌즈가 골반 높이에 오도록 맞추고, 비스듬한 각도가 아닌 90도 완벽한 측면에서 촬영해주세요.</span>
                 </div>
               </label>
-              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer">
+              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer transition-colors hover:border-accent/50">
                 <input
                   type="checkbox"
                   checked={guideFullBody}
@@ -928,7 +944,7 @@ export function PoseAnalyzer() {
                   <span className="text-xs text-muted leading-tight block mt-1">동작 중에도 머리나 발끝이 화면 밖으로 나가지 않도록 카메라와의 거리를 충분히 확보해주세요.</span>
                 </div>
               </label>
-              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer">
+              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer transition-colors hover:border-accent/50">
                 <input
                   type="checkbox"
                   checked={guideClothing}
@@ -940,7 +956,7 @@ export function PoseAnalyzer() {
                   <span className="text-xs text-muted leading-tight block mt-1">검은색 헐렁한 옷은 관절 추적을 어렵게 합니다. 윤곽이 잘 드러나는 옷이 인식률을 크게 높입니다.</span>
                 </div>
               </label>
-              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer">
+              <label className="checklist-item flex items-start gap-2 bg-elevated p-3 rounded-lg border border-border cursor-pointer transition-colors hover:border-accent/50">
                 <input
                   type="checkbox"
                   checked={guideConsent}
@@ -958,19 +974,39 @@ export function PoseAnalyzer() {
             <span className="text-xs text-muted text-center sm:text-left">영상은 내 기기에서만 처리돼요. 외부 전송 없음 🔒</span>
             <button
               type="button"
-              className="primary-btn bg-accent text-bg text-sm px-4 py-3 md:py-2 w-full sm:w-auto font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="primary-btn bg-accent text-bg text-sm px-6 py-3 font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={!prepGuideReady}
-              onClick={() => setShowPrepGuide(false)}
+              onClick={() => {
+                setHasCompletedGuide(true);
+                setGuideExpanded(false);
+              }}
             >
-              준비 완료!
+              🚀 준비 완료!
             </button>
           </div>
         </div>
+      ) : (
+        <div 
+          className="bg-elevated/50 border border-white/10 rounded-lg p-4 mb-6 flex justify-between items-center cursor-pointer hover:bg-elevated hover:border-accent/50 transition-all group animate-fade-in"
+          onClick={() => setGuideExpanded(true)}
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-accent text-lg">✅</span>
+            <div>
+              <span className="text-sm font-bold block text-white">가이드라인 확인 완료</span>
+              <span className="text-xs text-muted">분석 준비가 완료되었습니다.</span>
+            </div>
+          </div>
+          <span className="text-sm text-muted group-hover:text-accent transition-colors flex items-center gap-1">
+            가이드라인 다시 보기 <span className="text-xs">▾</span>
+          </span>
+        </div>
       )}
 
-      {/* 메인 분석 레이아웃 그리드 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 왼쪽 2열: 비디오/카메라 스크린 */}
+      {/* 메인 분석 레이아웃 그리드 (가이드 완료 후에만 표시) */}
+      {hasCompletedGuide && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+          {/* 왼쪽 2열: 비디오/카메라 스크린 */}
         <div className="lg:col-span-2">
           {activeTab === 'webcam' ? (
             <div className="webcam-pane flex flex-col">
@@ -987,7 +1023,7 @@ export function PoseAnalyzer() {
                 {liveAnalysis?.confidenceWarning && (
                   <div className="absolute inset-0 bg-black/75 flex flex-col justify-center items-center p-6 text-center z-10">
                     <span className="text-4xl mb-2">⚠️</span>
-                    <h5 className="text-lg font-bold text-red mb-1">관절이 잘 안 보여요</h5>
+                    <h5 className="text-lg font-bold text-red mb-1">인식이 어려워요</h5>
                     <p className="text-sm text-muted max-w-sm">
                       관절({liveAnalysis.lowConfidenceJoints.join(', ')})이 가려져 있거나 어두워서 인식이 어려워요. 카메라 위치를 조정해주세요.
                     </p>
@@ -996,19 +1032,19 @@ export function PoseAnalyzer() {
 
                 {/* 미활성화 대기화면 */}
                 {!webcamActive && (
-                  <div className="absolute inset-0 bg-elevated flex flex-col justify-center items-center p-6 text-center">
-                    <span className="text-5xl mb-4">🎥</span>
-                    <p className="font-bold mb-2">실시간 AI 폼 체크</p>
-                    <small className="text-muted mb-4 max-w-xs">
+                  <div className="absolute inset-0 bg-elevated flex flex-col justify-center items-center p-4 md:p-6 text-center overflow-y-auto">
+                    <span className="text-3xl md:text-5xl mb-2 md:mb-4">🎥</span>
+                    <p className="font-bold text-base md:text-lg mb-1 md:mb-2">실시간 AI 폼 체크</p>
+                    <small className="text-xs md:text-sm text-muted mb-3 md:mb-4 max-w-xs px-2 leading-relaxed">
                       카메라를 켜고 운동을 시작하면 AI가 실시간으로 자세를 분석해줘요.
                     </small>
                     <button
                       type="button"
-                      className={`primary-btn bg-accent text-bg px-6 py-3 font-bold ${showPrepGuide ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      className={`primary-btn bg-accent text-bg px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-base font-bold`}
                       onClick={startWebcam}
-                      disabled={!modelReady || showPrepGuide}
+                      disabled={!modelReady}
                     >
-                      {showPrepGuide ? '가이드라인을 먼저 확인해주세요' : '카메라 켜기'}
+                      카메라 켜기
                     </button>
                   </div>
                 )}
@@ -1034,12 +1070,12 @@ export function PoseAnalyzer() {
           ) : (
             <div className="video-file-pane flex flex-col">
               {!blobUrl ? (
-                <label className={`upload-zone large border border-dashed border-border rounded-radius flex flex-col items-center justify-center p-8 transition aspect-video ${showPrepGuide ? 'bg-card/50 opacity-50 cursor-not-allowed' : 'bg-card cursor-pointer hover:bg-elevated'}`}>
-                  <input type="file" accept="video/*" onChange={handleFileChange} hidden disabled={showPrepGuide} />
+                <label className={`upload-zone large border border-dashed border-border rounded-radius flex flex-col items-center justify-center p-4 md:p-8 transition aspect-video bg-card cursor-pointer hover:bg-elevated overflow-y-auto`}>
+                  <input type="file" accept="video/*" onChange={handleFileChange} hidden />
                   <div className="upload-content text-center">
-                    <span className="upload-icon text-4xl block mb-2">📹</span>
-                    <p className="font-bold">{showPrepGuide ? '가이드라인을 먼저 확인해주세요' : '운동 영상 올리기'}</p>
-                    <small className="text-muted block mt-1">MP4, MOV 지원 · 내 기기에서 분석</small>
+                    <span className="upload-icon text-3xl md:text-4xl block mb-2 md:mb-4">📁</span>
+                    <p className="font-bold text-base md:text-lg mb-1">운동 영상 올리기</p>
+                    <small className="text-xs md:text-sm text-muted block mt-1">MP4, MOV 지원 · 내 기기에서 분석</small>
                   </div>
                 </label>
               ) : (
@@ -1400,7 +1436,8 @@ export function PoseAnalyzer() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

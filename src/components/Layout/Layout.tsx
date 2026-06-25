@@ -1,7 +1,8 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const NAV = [
-  { path: '/', label: 'AI 폼 체킹' },
+  { path: '/', label: '소개' },
+  { path: '/analysis', label: 'AI 폼 체킹' },
   { path: '/feedback', label: '프로 피드백' },
 ];
 
