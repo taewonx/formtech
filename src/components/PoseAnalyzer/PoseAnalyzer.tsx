@@ -809,6 +809,16 @@ export function PoseAnalyzer() {
   // 가이드 패널 체크 유효성 검사
   const prepGuideReady = guideAngle && guideFullBody && guideClothing && guideConsent;
 
+  // 종합 평가 점수 계산 및 피드백 로직
+  const currentReps = activeTab === 'webcam' ? webcamReps : videoReps;
+  const totalReps = currentReps.length;
+  const goodReps = currentReps.filter(r => r.isGood).length;
+  const aiScore = totalReps > 0 ? Math.round((goodReps / totalReps) * 100) : 0;
+  const uniqueErrors = Array.from(new Set(currentReps.flatMap(r => r.errorType)));
+  const aiFeedbackText = aiScore === 100 
+    ? "완벽한 자세입니다! 부상 위험 없이 아주 훌륭하게 수행하셨어요. 👍" 
+    : `개선이 필요해요! 주로 [${uniqueErrors.join(', ')}] 문제가 감지되었습니다. 지속될 경우 관절에 무리가 갈 수 있습니다.`;
+
   return (
     <div className="pose-analyzer">
       {/* 상단 컨트롤 바 */}
@@ -1247,6 +1257,24 @@ export function PoseAnalyzer() {
                 </span>
               </div>
             </div>
+
+            {/* AI 점수 및 전문가 후킹 패널 */}
+            {totalReps > 0 && (
+              <div className="ai-score-panel mb-4 p-4 bg-elevated border border-accent/30 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <h5 className="font-bold text-accent">💯 AI 자세 평가 점수</h5>
+                  <span className="text-2xl font-black text-accent">{aiScore}점</span>
+                </div>
+                <p className="text-sm mb-3 leading-relaxed">
+                  {aiFeedbackText}
+                </p>
+                {aiScore < 100 && (
+                  <button type="button" className="w-full bg-accent text-bg font-bold py-2.5 rounded-md hover:opacity-90 transition shadow-sm hover:scale-[1.02] transform">
+                    👉 내 체형에 맞는 완벽한 자세 교정법 알아보기 (전문가 1:1 가이드)
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* 개별 랩 리스트 */}
             <div className="rep-list-scroll max-h-[220px] overflow-y-auto flex flex-col gap-2 pr-1">
