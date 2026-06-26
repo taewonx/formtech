@@ -153,7 +153,7 @@ export function analyzeSquatFrame(keypoints: PoseKeypoint[]): PostureAnalysisRes
   };
 
   // 주요 관절 중 하나라도 감지가 불가능하거나 신뢰도가 너무 낮은 경우 예외 처리
-  const MIN_CONFIDENCE = 0.45;
+  const MIN_CONFIDENCE = 0.6;
   const joints = [
     { name: '어깨', kp: shoulder },
     { name: '골반', kp: hip },
@@ -170,7 +170,7 @@ export function analyzeSquatFrame(keypoints: PoseKeypoint[]): PostureAnalysisRes
   if (result.lowConfidenceJoints.length > 0) {
     result.confidenceWarning = true;
     result.status = 'warning';
-    result.feedback = `${result.lowConfidenceJoints.join(', ')}이(가) 잘 안 보여요. 카메라를 조정해주세요`;
+    result.feedback = `${result.lowConfidenceJoints.join(', ')} 감지 실패!`;
     return result;
   }
 
@@ -252,7 +252,7 @@ export function analyzeDeadliftFrame(keypoints: PoseKeypoint[]): PostureAnalysis
     lowConfidenceJoints: [],
   };
 
-  const MIN_CONFIDENCE = 0.45;
+  const MIN_CONFIDENCE = 0.6;
   const joints = [
     { name: '어깨', kp: shoulder },
     { name: '골반', kp: hip },
@@ -269,7 +269,7 @@ export function analyzeDeadliftFrame(keypoints: PoseKeypoint[]): PostureAnalysis
   if (result.lowConfidenceJoints.length > 0) {
     result.confidenceWarning = true;
     result.status = 'warning';
-    result.feedback = `${result.lowConfidenceJoints.join(', ')}이(가) 잘 안 보여요. 카메라를 조정해주세요`;
+    result.feedback = `${result.lowConfidenceJoints.join(', ')} 감지 실패!`;
     return result;
   }
 

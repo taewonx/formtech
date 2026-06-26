@@ -1,83 +1,41 @@
-# 폼테크 (FormTech)
+# 🏋️ FormTech (폼테크)
 
-> **"비디오는 무겁고, 코드는 가볍다"**
+> 클라이언트 100% 처리, 완벽한 프라이버시가 보장되는 AI 운동 폼 분석 솔루션
 
-1인 창업가를 위한 클라이언트 중심 운동 폼 분석 도구입니다.
-모든 영상 처리와 AI 추론은 **유저의 브라우저**에서 수행되며, 서버 비용은 최소화됩니다.
+![FormTech Preview](./public/squat_guide.jpg)
 
-## 핵심 철학
+FormTech는 MediaPipe의 경량화된 AI 모델(TensorFlow.js)을 활용하여 **사용자의 기기(브라우저)에서 직접 영상 및 실시간 카메라를 분석**하는 스마트 폼 체크 도구입니다. 영상이나 데이터가 외부 서버로 전송되지 않으므로 개인정보 보호와 비용 절감이라는 두 가지 목적을 동시에 달성합니다.
 
-| 원칙 | 구현 |
-|------|------|
-| 영상은 서버에 안 올린다 | Blob URL, 브라우저 메모리만 사용 |
-| AI는 클라이언트에서 돌린다 | TensorFlow.js + MediaPipe BlazePose |
-| 저장은 JSON만 | 관절 좌표 (KB 단위), 영상 X |
-| 배포는 정적 호스팅 | Vercel/Netlify, 서버 불필요 |
+## ✨ 주요 기능
+- **실시간 웹캠 분석**: 카메라 앞에서 운동하면 횟수(Rep)와 자세를 실시간으로 피드백 (음성 코칭 포함)
+- **비디오 일괄 분석**: 녹화된 영상을 업로드하면 세트/랩을 자동 스캔하여 정확도 평가
+- **자동 랩 카운팅**: 스쿼트/데드리프트 상태 머신을 이용한 정확한 횟수 및 오류 감지 (골반 말림, 깊이 부족, 허리 굽음 등)
+- **운동 세션 기록**: 브라우저 LocalStorage에 이전 세트 기록 자동 저장 및 통계 제공
 
-## Phase별 기능
+## 🛠 기술 스택
+- **프론트엔드**: React 19, TypeScript, Vite
+- **스타일링**: Tailwind CSS v4, Vanilla CSS
+- **AI / 비전 모델**: `@tensorflow-models/pose-detection` (MoveNet - Singlepose Lightning)
+- **배포 & 저장**: 로컬 브라우저 구동 (서버 및 DB 의존성 없음)
 
-### Phase 1 — MVP (구현 완료)
-- `/analyzer` — 영상 업로드 + 프레임 단위 이동 + 슬로우 모션
-- `/compare` — 내 영상 vs 전문가 영상 나란히 비교
-- Canvas API — 관절 포인트, 바벨 궤적 직접 그리기
-
-### Phase 2 — Vision AI (구현 완료)
-- `/pose` — MoveNet으로 관절 17개 자동 추출
-- 스켈레톤 시각화 + 팔꿈치/무릎/고관절 각도 표시
-- 분석 결과 JSON → localStorage 저장
-
-### Phase 3 — B2B 플랫폼 (스텁)
-- `src/widget/FormCheckWidget.tsx` — 코치 임베드 위젯
-- `src/services/supabase.ts` — Presigned URL 업로드 스텁
-- `docs/PHASE3.md` — 상세 아키텍처 가이드
-
-## 시작하기
+## 🚀 시작하기
 
 ```bash
+# 1. 패키지 설치
 npm install
+
+# 2. 로컬 개발 서버 실행
 npm run dev
+
+# 3. 브라우저 접속
+http://localhost:5173
 ```
 
-브라우저에서 http://localhost:5173 접속
+## 📸 프로젝트 스크린샷 
 
-## 배포
+- 실시간 웹캠 & AI 폼 피드백 시스템
+- 각도 (무릎, 고관절, 등) 모니터링
+- 세트 당 운동 정확도(%) 및 리포트 제공
 
-```bash
-npm run build
-# Vercel
-npx vercel
-
-# Netlify
-npx netlify deploy --prod --dir=dist
-```
-
-## 프로젝트 구조
-
-```
-src/
-├── components/
-│   ├── VideoPlayer/     # 프레임 이동, 슬로우 모션
-│   ├── CanvasOverlay/   # 바패스/관절 그리기
-│   ├── ComparisonView/  # 전문가 영상 비교
-│   └── PoseAnalyzer/    # BlazePose AI 분석
-├── hooks/
-│   ├── useVideoPlayer.ts
-│   ├── useCanvasDrawing.ts
-│   └── useBlobUrl.ts
-├── services/
-│   ├── poseDetection.ts # TensorFlow.js BlazePose
-│   └── supabase.ts      # Phase 3 스텁
-├── pages/
-└── widget/              # Phase 3 임베드 위젯
-```
-
-## 기술 스택
-
-- **Frontend**: React 19 + TypeScript + Vite
-- **AI**: @tensorflow/tfjs + MoveNet (클라이언트 추론)
-- **라우팅**: react-router-dom
-- **배포**: Vercel / Netlify (정적)
-
-## 라이선스
-
-MIT
+## 📜 라이선스
+MIT License
