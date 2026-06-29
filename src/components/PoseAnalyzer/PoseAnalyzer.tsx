@@ -194,9 +194,17 @@ export function PoseAnalyzer() {
   const currentReps = activeTab === 'webcam' ? webcamReps : videoReps;
   const aiScore = currentReps.length > 0 ? Math.round((currentReps.filter(r => r.isGood).length / currentReps.length) * 100) : 0;
   const uniqueErrors = Array.from(new Set(currentReps.flatMap(r => r.errorType)));
-  const aiFeedbackText = aiScore === 100 
-    ? "완벽한 자세입니다! 부상 위험 없이 아주 훌륭하게 수행하셨어요. 👍" 
-    : `개선이 필요해요! 주로 [${uniqueErrors.join(', ')}] 문제가 감지되었습니다. 지속될 경우 관절에 무리가 갈 수 있습니다.`;
+  
+  let aiFeedbackText = '아직 기록된 세트가 없습니다. 운동을 시작해보세요!';
+  if (currentReps.length > 0) {
+    if (aiScore === 100) {
+      aiFeedbackText = '완벽한 자세입니다! 부상 위험 없이 아주 훌륭하게 수행하셨어요. 👍';
+    } else {
+      const errorStrings = uniqueErrors.filter(Boolean).join(', ');
+      aiFeedbackText = `개선이 필요해요! 주로 [${errorStrings}] 문제가 감지되었습니다. 지속될 경우 관절에 무리가 갈 수 있습니다.`;
+    }
+  }
+  
   const error = activeTab === 'webcam' ? webcamError : videoError;
 
   return (

@@ -15,7 +15,7 @@ export function Home() {
         </h1>
         <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
           서버 전송 없이 내 기기에서 바로 분석하는 완벽한 프라이버시.
-          실시간 웹캠부터 영상 업로드까지, AI가 바패스와 관절 움직임을 정밀하게 추적합니다.
+          실시간 웹캠부터 영상 업로드까지, AI가 즉각적인 피드백과 음성 코칭을 제공합니다.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -51,10 +51,10 @@ export function Home() {
 
           {/* Feature 2 */}
           <div className="bg-card border border-border p-8 rounded-2xl hover:border-[#00ff88]/50 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(0,255,136,0.15)] transition-all duration-300 group">
-            <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 origin-left">🎯</div>
-            <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#00ff88] transition-colors">정밀한 바패스 추적</h3>
+            <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 origin-left">🤖</div>
+            <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#00ff88] transition-colors">실시간 AI 폼 체킹</h3>
             <p className="text-muted text-sm leading-relaxed">
-              운동 중 바벨의 궤적(Bar Path)과 주요 관절의 움직임을 화면에 직관적인 선으로 그려주어 자세의 불안정성을 한눈에 파악할 수 있습니다.
+              사용자의 주요 관절 움직임을 AI가 실시간으로 정밀하게 추적하여, 올바른 스쿼트와 데드리프트 자세를 가이드하고 위험한 자세를 경고합니다.
             </p>
           </div>
 
@@ -69,10 +69,10 @@ export function Home() {
 
           {/* Feature 4 */}
           <div className="bg-card border border-border p-8 rounded-2xl hover:border-[#ff4757]/50 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,71,87,0.15)] transition-all duration-300 group">
-            <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 origin-left">✍️</div>
-            <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#ff4757] transition-colors">전문가용 드로잉 툴</h3>
+            <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 origin-left">📢</div>
+            <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#ff4757] transition-colors">즉각적인 음성 코칭</h3>
             <p className="text-muted text-sm leading-relaxed">
-              영상 위에 직접 관절 포인트를 찍거나 자유로운 궤적을 그릴 수 있는 강력한 그리기 도구를 제공하여 코칭 피드백 작성에 최적화되어 있습니다.
+              운동 중 화면을 계속 확인하기 어려우신가요? 즉시 반응하는 음성 코칭을 켜두면, 자세 교정 피드백을 실시간 오디오로 들으며 운동에 집중할 수 있습니다.
             </p>
           </div>
 

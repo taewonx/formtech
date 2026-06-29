@@ -1,4 +1,5 @@
 import type { RepRecord } from '../../types';
+import { Link } from 'react-router-dom';
 
 interface RepsListPanelProps {
   exercise: 'squat' | 'deadlift';
@@ -49,9 +50,9 @@ export function RepsListPanel({
           </div>
           <p className="text-sm mb-3 leading-relaxed">{aiFeedbackText}</p>
           {aiScore < 100 && (
-            <button type="button" className="w-full bg-accent text-bg font-bold py-2.5 rounded-md hover:opacity-90 transition shadow-sm hover:scale-[1.02] transform">
-              👉 내 체형에 맞는 완벽한 자세 교정법 알아보기 (전문가 1:1 가이드)
-            </button>
+            <Link to="/feedback" className="block text-center w-full bg-accent text-bg font-bold py-2.5 rounded-md hover:opacity-90 transition shadow-sm hover:scale-[1.02] transform">
+              👉 맞춤형 AI 자세 교정 솔루션 확인하기
+            </Link>
           )}
         </div>
       )}
