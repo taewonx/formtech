@@ -43,16 +43,7 @@ export interface RepRecord {
   errorType: string[];
 }
 
-/** 세션(세트) 요약 기록 — localStorage에 저장 */
-export interface SavedSession {
-  id: string;
-  date: string;
-  exercise: 'squat' | 'deadlift';
-  totalReps: number;
-  goodReps: number;
-  successRate: number;
-  notes: string;
-}
+
 
 /** 랩 카운터 상태 머신 페이즈 */
 export type RepPhase = 'none' | 'descending' | 'bottom' | 'ascending';

@@ -1,11 +1,11 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { initPoseDetector } from '../../services/poseDetection';
 import { analyzeSquatFrame, analyzeDeadliftFrame } from '../../utils/angles';
 import type { PostureAnalysisResult } from '../../utils/angles';
 import { drawSkeletonOnCanvas } from '../../utils/skeleton';
 import { createInitialRepState, processRepFrame, type RepCounterState } from '../../utils/repCounter';
 import { speak } from '../../utils/speech';
-import type { RepRecord } from '../../types';
+import type { RepRecord, PoseKeypoint } from '../../types';
 
 interface UseWebcamAnalysisOptions {
   exercise: 'squat' | 'deadlift';
@@ -27,13 +27,18 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
   const isProcessingFrame = useRef(false);
   
   const repState = useRef<RepCounterState>(createInitialRepState());
-  const lastPoseFrame = useRef<any>(null);
+  const lastPoseFrame = useRef<{ keypoints: PoseKeypoint[], result: PostureAnalysisResult } | null>(null);
 
   // 추가 고도화 상태 변수
   const lastSpeechTime = useRef<number>(0);
   const lastSpeechText = useRef<string>('');
   const lastKneeAngle = useRef<number>(180);
   const lastKneeTime = useRef<number>(0);
+  const soundEnabledRef = useRef(soundEnabled);
+
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   const startWebcam = async () => {
     setError(null);
@@ -85,15 +90,15 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
     
     if (newRep) {
       setWebcamReps((prev) => [...prev, newRep]);
-      if (newRep.isGood) {
-        speak('좋은 자세예요!', soundEnabled);
-      } else {
-        const hasWink = newRep.errorType.some(e => e.includes('벗윙크'));
-        const hasRound = newRep.errorType.some(e => e.includes('등허리'));
-        if (hasWink) speak('골반 자세 확인!', soundEnabled);
-        else if (hasRound) speak('허리 자세 확인!', soundEnabled);
-        else speak('조금 더 깊게!', soundEnabled);
-      }
+        if (newRep.isGood) {
+          speak('좋은 자세예요!', soundEnabledRef.current);
+        } else {
+          const hasWink = newRep.errorType.some(e => e.includes('벗윙크'));
+          const hasRound = newRep.errorType.some(e => e.includes('등허리'));
+          if (hasWink) speak('골반 자세 확인!', soundEnabledRef.current);
+          else if (hasRound) speak('허리 자세 확인!', soundEnabledRef.current);
+          else speak('조금 더 깊게!', soundEnabledRef.current);
+        }
     }
   };
 
@@ -134,6 +139,7 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
             ? analyzeSquatFrame(keypoints) 
             : analyzeDeadliftFrame(keypoints);
 
+          // eslint-disable-next-line react-hooks/purity
           const nowMs = Date.now();
 
           // 1. 하강 속도(Velocity) 기반 피드백 (스쿼트)
@@ -161,7 +167,7 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
           // 2. 실시간 TTS 중복 방지 (1회 반복 중 중복 재생 방지)
           if (res.status === 'danger' || res.status === 'warning') {
             if (nowMs - lastSpeechTime.current > 3000 && lastSpeechText.current !== res.feedback) {
-              speak(res.feedback, soundEnabled);
+              speak(res.feedback, soundEnabledRef.current);
               lastSpeechTime.current = nowMs;
               lastSpeechText.current = res.feedback;
             }

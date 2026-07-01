@@ -4,19 +4,17 @@ import { detectPoseInVideo, findClosestFrame, initPoseDetector } from '../../ser
 import { saveAnalysis } from '../../utils/storage';
 import { scanVideoReps } from '../../utils/repCounter';
 import { stopSpeech, speak } from '../../utils/speech';
-import type { PoseFrame, RepRecord, PoseAnalysisResult as TFAnalysisResult, SavedSession } from '../../types';
+import type { PoseFrame, RepRecord, PoseAnalysisResult as TFAnalysisResult } from '../../types';
 
 import { useBlobUrl } from '../../hooks/useBlobUrl';
 import { useVideoPlayer } from '../../hooks/useVideoPlayer';
-import { useSessionHistory } from '../../hooks/useSessionHistory';
 import { useGuidelineState } from './useGuidelineState';
 import { useWebcamAnalysis } from './useWebcamAnalysis';
 
 import { VideoControls } from '../VideoPlayer/VideoControls';
 import { GuidelinePanel } from './GuidelinePanel';
 import { AnglesFeedback } from './AnglesFeedback';
-import { RepsListPanel } from './RepsListPanel';
-import { SessionHistoryPanel } from './SessionHistoryPanel';
+import { LeadGenResultPanel } from './LeadGenResultPanel';
 import { drawSkeletonOnCanvas } from '../../utils/skeleton';
 
 export function PoseAnalyzer() {
@@ -25,7 +23,6 @@ export function PoseAnalyzer() {
     videoRef, isPlaying, currentTime, duration, playbackRate,
     togglePlay, seek, stepFrame, setRate,
   } = useVideoPlayer({ src: blobUrl });
-  const { savedSessions, saveSuccessMsg, saveSession, deleteSession } = useSessionHistory();
   const guideline = useGuidelineState();
 
   const [activeTab, setActiveTab] = useState<'webcam' | 'video'>('webcam');
@@ -165,21 +162,7 @@ export function PoseAnalyzer() {
     }
   }, [videoRef, blobUrl, fileName, exercise]);
 
-  const handleSaveSession = () => {
-    const reps = activeTab === 'webcam' ? webcamReps : videoReps;
-    if (reps.length === 0) return;
-    const goodReps = reps.filter(r => r.isGood).length;
-    const newSession: SavedSession = {
-      id: crypto.randomUUID(),
-      date: new Date().toLocaleString('ko-KR'),
-      exercise,
-      totalReps: reps.length,
-      goodReps,
-      successRate: Math.round((goodReps / reps.length) * 100),
-      notes: reps.some(r => !r.isGood) ? '부분적인 자세 개선이 필요합니다.' : '완벽한 세트! 💪',
-    };
-    saveSession(newSession);
-  };
+  // session handling removed
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -192,18 +175,6 @@ export function PoseAnalyzer() {
   };
 
   const currentReps = activeTab === 'webcam' ? webcamReps : videoReps;
-  const aiScore = currentReps.length > 0 ? Math.round((currentReps.filter(r => r.isGood).length / currentReps.length) * 100) : 0;
-  const uniqueErrors = Array.from(new Set(currentReps.flatMap(r => r.errorType)));
-  
-  let aiFeedbackText = '아직 기록된 세트가 없습니다. 운동을 시작해보세요!';
-  if (currentReps.length > 0) {
-    if (aiScore === 100) {
-      aiFeedbackText = '완벽한 자세입니다! 부상 위험 없이 아주 훌륭하게 수행하셨어요. 👍';
-    } else {
-      const errorStrings = uniqueErrors.filter(Boolean).join(', ');
-      aiFeedbackText = `개선이 필요해요! 주로 [${errorStrings}] 문제가 감지되었습니다. 지속될 경우 관절에 무리가 갈 수 있습니다.`;
-    }
-  }
   
   const error = activeTab === 'webcam' ? webcamError : videoError;
 
@@ -272,6 +243,7 @@ export function PoseAnalyzer() {
                       </button>
                     </div>
                   )}
+                  {liveAnalysis && webcamActive && <AnglesFeedback exercise={exercise} analysisResult={liveAnalysis} isWebcam={true} />}
                 </div>
                 <div className="flex justify-between items-center mt-3 bg-card p-3 rounded-radius border border-border">
                   <div className="flex items-center gap-4">
@@ -295,7 +267,6 @@ export function PoseAnalyzer() {
                     </button>
                   )}
                 </div>
-                {liveAnalysis && <AnglesFeedback exercise={exercise} analysisResult={liveAnalysis} isWebcam={true} />}
               </div>
             ) : (
               <div className="video-file-pane flex flex-col">
@@ -312,6 +283,7 @@ export function PoseAnalyzer() {
                     <div className="video-container bg-black rounded-radius overflow-hidden border border-border relative">
                       <video ref={videoRef} src={blobUrl} className="w-full block max-h-[500px] object-contain" playsInline />
                       <canvas ref={videoCanvasRef} className="absolute inset-0 pointer-events-none" />
+                      {currentFrameAnalysis && <AnglesFeedback exercise={exercise} analysisResult={currentFrameAnalysis} isWebcam={false} />}
                     </div>
                     <VideoControls isPlaying={isPlaying} currentTime={currentTime} duration={duration} playbackRate={playbackRate} onTogglePlay={togglePlay} onStepFrame={stepFrame} onSeek={seek} onSetRate={setRate} />
                     
@@ -320,15 +292,17 @@ export function PoseAnalyzer() {
                         {analyzing ? `분석 중... ${progress}%` : 'AI 폼 분석 시작'}
                       </button>
                     </div>
-                    {currentFrameAnalysis && <AnglesFeedback exercise={exercise} analysisResult={currentFrameAnalysis} isWebcam={false} />}
                   </>
                 )}
               </div>
             )}
           </div>
           <div className="lg:col-span-1 flex flex-col gap-6">
-            <RepsListPanel exercise={exercise} reps={currentReps} isWebcam={activeTab === 'webcam'} onSeek={seek} onSaveSession={handleSaveSession} saveSuccessMsg={saveSuccessMsg} aiScore={aiScore} aiFeedbackText={aiFeedbackText} />
-            <SessionHistoryPanel sessions={savedSessions} onDelete={deleteSession} />
+            <LeadGenResultPanel 
+              exercise={exercise} 
+              reps={currentReps} 
+              isAnalyzed={activeTab === 'video' ? frames.length > 0 : currentReps.length > 0} 
+            />
           </div>
         </div>
       )}

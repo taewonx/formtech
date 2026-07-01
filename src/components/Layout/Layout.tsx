@@ -3,7 +3,6 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 const NAV = [
   { path: '/', label: '소개' },
   { path: '/analysis', label: 'AI 폼 체킹' },
-  { path: '/feedback', label: '교정 솔루션' },
 ];
 
 
@@ -39,8 +38,31 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="app-footer border-t border-white/10 text-center py-6 px-4 text-xs md:text-sm text-muted">
-        <p>모든 분석은 내 기기에서 · 영상 외부 전송 없음 🔒</p>
+      <footer className="app-footer border-t border-white/10 bg-card/50 pt-10 pb-8 px-4 text-xs text-muted">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+          {/* 서비스 정보 영역 (무료 배포용) */}
+          <div className="flex-1 space-y-2">
+            <div className="font-bold text-white text-sm mb-3">FormTech (무료 AI 폼 체커)</div>
+            <p>이메일 문의: support@formtech.app</p>
+            <p className="mt-4 text-white/40">
+              ※ FormTech의 AI 분석 결과는 참고용이며 의학적 진단을 대체하지 않습니다.
+            </p>
+          </div>
+
+          {/* 정책 및 링크 영역 */}
+          <div className="flex flex-col items-start md:items-end gap-3">
+            <div className="flex gap-4 font-semibold text-white/80">
+              <Link to="/terms" className="hover:text-accent transition-colors">이용약관</Link>
+              <Link to="/privacy" className="hover:text-accent transition-colors text-accent">개인정보처리방침</Link>
+            </div>
+            <p className="text-white/40 mt-2">
+              모든 분석은 내 기기 안에서만 처리되며 외부로 전송되지 않습니다 🔒
+            </p>
+            <p className="text-white/40">
+              Copyright © {new Date().getFullYear()} FormTech. All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -6,61 +6,51 @@ interface AnglesFeedbackProps {
   isWebcam: boolean;
 }
 
-export function AnglesFeedback({ exercise, analysisResult }: AnglesFeedbackProps) {
+export function AnglesFeedback({ analysisResult }: AnglesFeedbackProps) {
   return (
-    <div className="angles-panel mt-4 bg-card border border-border rounded-radius p-5">
-      <h4 className="font-bold border-b border-border pb-2 mb-4 text-sm text-accent">
-        📊 {exercise === 'squat' ? '스쿼트' : '데드리프트'} 실시간 폼 분석
-      </h4>
-      
-      {/* 계측 데이터 그리드 */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        <div className="angle-card bg-elevated rounded-lg p-3 flex flex-col">
-          <span className="angle-label text-xs text-muted">무릎 각도</span>
-          <span className="angle-value text-2xl font-bold text-accent">
-            {analysisResult.kneeAngle}°
-          </span>
-        </div>
-        <div className="angle-card bg-elevated rounded-lg p-3 flex flex-col">
-          <span className="angle-label text-xs text-muted">골반 각도</span>
-          <span className="angle-value text-2xl font-bold text-accent">
-            {analysisResult.hipAngle}°
-          </span>
-        </div>
-        <div className="angle-card bg-elevated rounded-lg p-3 flex flex-col">
-          <span className="angle-label text-xs text-muted">등 각도</span>
-          <span className="angle-value text-2xl font-bold text-accent">
-            {analysisResult.backAngle}°
-          </span>
-        </div>
-        <div className="angle-card bg-elevated rounded-lg p-3 flex flex-col">
-          <span className="angle-label text-xs text-muted">깊이</span>
-          <span className="angle-value text-lg font-bold text-accent uppercase">
-            {analysisResult.depth}
-          </span>
-        </div>
-      </div>
-
-      {/* 실시간 텍스트 피드백 카드 */}
+    <div className="absolute top-4 right-4 w-48 flex flex-col gap-2 z-20 pointer-events-none">
+      {/* 실시간 텍스트 피드백 배너 (상단) */}
       <div
-        className={`feedback-box p-4 rounded-lg border text-sm font-semibold flex items-center gap-3 ${
+        className={`p-3 rounded-xl shadow-lg backdrop-blur-md border text-sm font-bold flex items-start gap-2 ${
           analysisResult.status === 'danger'
-            ? 'bg-red/10 border-red text-red'
+            ? 'bg-red/80 border-red text-white'
             : analysisResult.status === 'warning'
-            ? 'bg-yellow/10 border-yellow text-yellow'
-            : 'bg-green/10 border-green text-green'
-        }`}
+            ? 'bg-yellow/80 border-yellow text-white'
+            : 'bg-green/80 border-green text-white'
+        } animate-fade-in`}
       >
-        <span className="text-xl">
+        <span className="text-lg leading-none mt-0.5">
           {analysisResult.status === 'danger'
             ? '🚨'
             : analysisResult.status === 'warning'
             ? '⚠️'
             : '✅'}
         </span>
-        <p className="margin-0 leading-relaxed">
+        <p className="margin-0 leading-tight">
           {analysisResult.feedback}
         </p>
+      </div>
+
+      {/* 계측 데이터 HUD */}
+      <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-lg">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col items-center p-1 bg-white/5 rounded-lg">
+            <span className="text-[10px] text-white/60">KNEE</span>
+            <span className="text-sm font-bold text-accent">{analysisResult.kneeAngle}°</span>
+          </div>
+          <div className="flex flex-col items-center p-1 bg-white/5 rounded-lg">
+            <span className="text-[10px] text-white/60">HIP</span>
+            <span className="text-sm font-bold text-accent">{analysisResult.hipAngle}°</span>
+          </div>
+          <div className="flex flex-col items-center p-1 bg-white/5 rounded-lg">
+            <span className="text-[10px] text-white/60">BACK</span>
+            <span className="text-sm font-bold text-accent">{analysisResult.backAngle}°</span>
+          </div>
+          <div className="flex flex-col items-center p-1 bg-white/5 rounded-lg">
+            <span className="text-[10px] text-white/60">DEPTH</span>
+            <span className="text-sm font-bold text-accent uppercase">{analysisResult.depth}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

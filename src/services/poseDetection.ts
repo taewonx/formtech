@@ -20,7 +20,7 @@ export async function initPoseDetector() {
   detector = await poseDetection.createDetector(
     poseDetection.SupportedModels.MoveNet,
     {
-      modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
+      modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
     },
   );
 
@@ -30,15 +30,27 @@ export async function initPoseDetector() {
 export async function detectPoseInVideo(
   video: HTMLVideoElement,
   onProgress?: (percent: number) => void,
-  fps = 10,
+  fps = 5, // 기존 10fps에서 5fps로 줄여 분석 속도 2배 향상 (운동 분석에 5fps도 충분함)
 ): Promise<PoseFrame[]> {
   const det = await initPoseDetector();
   const frames: PoseFrame[] = [];
   const duration = video.duration;
   const interval = 1 / fps;
+  
+  // 비디오 해상도가 너무 높을 경우 렌더링 부하를 막기 위해 최대 크기 제한
+  const MAX_WIDTH = 640;
+  let canvasW = video.videoWidth;
+  let canvasH = video.videoHeight;
+  
+  if (canvasW > MAX_WIDTH) {
+    const scale = MAX_WIDTH / canvasW;
+    canvasW = MAX_WIDTH;
+    canvasH = canvasH * scale;
+  }
+
   const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  canvas.width = canvasW;
+  canvas.height = canvasH;
   const ctx = canvas.getContext('2d')!;
 
   const originalTime = video.currentTime;
@@ -54,7 +66,7 @@ export async function detectPoseInVideo(
       video.addEventListener('seeked', onSeeked);
     });
 
-    ctx.drawImage(video, 0, 0);
+    ctx.drawImage(video, 0, 0, canvasW, canvasH);
     const poses = await det.estimatePoses(canvas);
 
     if (poses[0]) {
