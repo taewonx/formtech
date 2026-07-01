@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export function Home() {
+  useSEO({
+    title: 'FormTech | 무료 AI 자세 교정 & 폼 체커',
+    description: '서버 전송 없이 내 기기에서 바로 분석하는 완벽한 프라이버시. 실시간 웹캠부터 영상 업로드까지, AI가 즉각적인 피드백과 음성 코칭을 제공합니다.',
+  });
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] w-full">
       

@@ -1,6 +1,12 @@
 import { PoseAnalyzer } from '../components/PoseAnalyzer/PoseAnalyzer';
+import { useSEO } from '../hooks/useSEO';
 
 export function PoseAnalysis() {
+  useSEO({
+    title: '스쿼트/데드리프트 AI 자세 교정 | FormTech',
+    description: '내 기기에서 바로 분석하는 100% 무료 실시간 AI 폼 체크. 스쿼트와 데드리프트 자세를 AI가 실시간으로 분석하고 교정해 줍니다.',
+  });
+
   return (
     <div className="page pose-page">
       <header className="mb-6 md:mb-10 text-center">
