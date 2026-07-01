@@ -253,7 +253,7 @@ export function PoseAnalyzer() {
                     </div>
                   )}
                 </div>
-                {liveAnalysis && webcamActive && <AnglesFeedback exercise={exercise} analysisResult={liveAnalysis} isWebcam={true} />}
+                {webcamActive && <AnglesFeedback exercise={exercise} analysisResult={liveAnalysis} isWebcam={true} />}
                 <div className="flex flex-wrap sm:flex-nowrap justify-between items-center mt-3 bg-card p-2 md:p-3 rounded-radius border border-border gap-2">
                   <div className="flex items-center gap-2 md:gap-4 w-full sm:w-auto justify-between sm:justify-start">
                     {webcamActive ? (

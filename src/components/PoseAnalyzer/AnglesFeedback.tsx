@@ -2,11 +2,37 @@ import type { PostureAnalysisResult } from '../../utils/angles';
 
 interface AnglesFeedbackProps {
   exercise: 'squat' | 'deadlift';
-  analysisResult: PostureAnalysisResult;
+  analysisResult: PostureAnalysisResult | null;
   isWebcam: boolean;
 }
 
 export function AnglesFeedback({ analysisResult }: AnglesFeedbackProps) {
+  if (!analysisResult) {
+    return (
+      <div className="w-full flex flex-col md:flex-row gap-3 mt-3 mb-1">
+        {/* 대기/인식 실패 상태 배너 */}
+        <div className="flex-1 p-4 rounded-xl shadow-sm border text-base font-bold flex items-center gap-3 bg-white/5 border-white/10 text-white/60">
+          <span className="text-2xl leading-none animate-pulse">🔍</span>
+          <p className="margin-0 leading-tight">
+            전신이 잘 보이도록 카메라 앞에 서주세요.
+          </p>
+        </div>
+
+        {/* 빈 계측 데이터 HUD */}
+        <div className="md:w-[320px] bg-card border border-border rounded-xl p-3 shadow-sm shrink-0">
+          <div className="grid grid-cols-4 gap-2 h-full">
+            {['KNEE', 'HIP', 'BACK', 'DEPTH'].map((label) => (
+              <div key={label} className="flex flex-col justify-center items-center p-2 bg-elevated rounded-lg opacity-50">
+                <span className="text-[10px] text-muted mb-1">{label}</span>
+                <span className="text-sm font-bold text-white">-</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-col md:flex-row gap-3 mt-3 mb-1">
       {/* 실시간 텍스트 피드백 배너 */}
