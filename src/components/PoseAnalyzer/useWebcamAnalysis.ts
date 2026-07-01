@@ -46,7 +46,12 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
     setError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facingModeRef.current },
+        video: { 
+          width: { ideal: 1280 }, 
+          height: { ideal: 720 }, 
+          facingMode: facingModeRef.current,
+          frameRate: { ideal: 30, max: 60 }
+        },
         audio: false,
       });
 
@@ -136,12 +141,17 @@ export function useWebcamAnalysis({ exercise, soundEnabled }: UseWebcamAnalysisO
     canvas.width = rect.width || 640;
     canvas.height = rect.height || 480;
 
-    // 거울 모드 렌더링
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
+    // 전면 카메라일 때만 거울 모드 렌더링
+    if (facingModeRef.current === 'user') {
+      ctx.save();
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    } else {
+      // 후면 카메라는 좌우 반전 없이 그대로 렌더링
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
 
     if (!isProcessingFrame.current) {
       isProcessingFrame.current = true;
