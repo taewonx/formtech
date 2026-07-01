@@ -319,6 +319,17 @@ export function PoseAnalyzer() {
           </div>
         </div>
       )}
+
+      {/* 법적 고지 (Disclaimer) */}
+      <div className="mt-8 pt-6 border-t border-white/5 text-center px-4">
+        <p className="text-[10px] text-muted mb-1">
+          🔒 <strong>개인정보 보호:</strong> 귀하의 운동 영상은 외부 서버로 전송되지 않으며, 사용 중인 기기 내에서만 안전하게 분석됩니다.
+        </p>
+        <p className="text-[10px] text-muted/70 leading-relaxed">
+          <strong>면책 조항:</strong> 본 AI 분석 서비스는 운동 자세에 대한 참고용 피드백을 제공할 뿐, 의학적 진단이나 처방을 대신할 수 없습니다. <br className="hidden sm:block"/>
+          기저 질환이 있거나 통증이 발생하는 경우, 반드시 전문의나 물리치료사와 상담하시기 바랍니다. 운동 중 발생한 부상에 대해 FormTech는 법적 책임을 지지 않습니다.
+        </p>
+      </div>
     </div>
   );
 }

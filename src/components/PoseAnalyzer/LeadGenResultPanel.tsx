@@ -347,10 +347,16 @@ export function LeadGenResultPanel({ exercise, reps, isAnalyzed = false }: LeadG
                     />
                   </div>
                 </div>
+                <div className="flex items-start gap-2 mt-1 mb-1">
+                  <input type="checkbox" id="privacyConsent" required className="mt-0.5 accent-accent w-3 h-3" />
+                  <label htmlFor="privacyConsent" className="text-[9px] text-white/60 leading-tight">
+                    [필수] 개인정보 수집 및 이용에 동의합니다. 수집된 정보는 리포트 발송 목적으로만 사용됩니다.
+                  </label>
+                </div>
                 <button 
                   type="submit" 
                   disabled={isSending}
-                  className="w-full bg-accent text-bg font-bold py-3 rounded-lg mt-3 hover:opacity-90 transition-all shadow-[0_0_15px_rgba(0,255,136,0.3)] hover:shadow-[0_0_25px_rgba(0,255,136,0.5)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                  className="w-full bg-accent text-bg font-bold py-3 rounded-lg mt-1 hover:opacity-90 transition-all shadow-[0_0_15px_rgba(0,255,136,0.3)] hover:shadow-[0_0_25px_rgba(0,255,136,0.5)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                 >
                   {isSending ? (
                     <>

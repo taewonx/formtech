@@ -43,7 +43,7 @@ export function Layout() {
           {/* 서비스 정보 영역 (무료 배포용) */}
           <div className="flex-1 space-y-2">
             <div className="font-bold text-white text-sm mb-3">FormTech (무료 AI 폼 체커)</div>
-            <p>이메일 문의: support@formtech.app</p>
+            <p>이메일 문의: twkang1332@gmail.com</p>
             <p className="mt-4 text-white/40">
               ※ FormTech의 AI 분석 결과는 참고용이며 의학적 진단을 대체하지 않습니다.
             </p>
